@@ -86,4 +86,19 @@ module.exports = {
       })
       .catch((error) => res.status(400).send(error));
   },
+
+  addWithCourse(req, res) {
+    return Lecturer
+      .create({
+        lecturer_name: req.body.lecturer_name,
+        course: req.body.course
+      }, {
+        include: [{
+          model: Course,
+          as: 'course'
+        }]
+      })
+      .then((lecturer) => res.status(201).send(lecturer))
+      .catch((error) => res.status(400).send(error))
+  },
 };

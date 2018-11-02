@@ -87,4 +87,19 @@ module.exports = {
       })
       .catch((error) => res.status(400).send(error));
   },
+
+  addWithStudents(req, res) {
+    return Classroom
+      .create({
+        class_name: req.body.class_name,
+        students: req.body.students,
+      }, {
+        include: [{
+          model: Student,
+          as: 'students',
+        }];
+      })
+      .then((classroom) => res.status(201).send(classroom))
+      .catch((error) => res.status(400).send(error));
+  },
 };
