@@ -22,7 +22,7 @@ module.exports = {
       .catch((error) => res.status(400).send(error));
   },
 
-  gtetById(req, res) {
+  getById(req, res) {
     return Student
       .findById(req.params.id, {
         include: [{

@@ -4,14 +4,14 @@ const Course = require('../models').Course;
 module.exports = {
   list(req, res) {
     return Lecturer
-      .findByAll({
+      .findAll({
         include: [{
           model: Course,
-          as: 'course',
+          as: 'course'
         }],
         order: [
           ['createdAt', 'DESC'],
-          [ { model: Course, as: 'course' }, 'createdAt', 'DESC'],
+          [{ model: Course, as: 'course' }, 'createdAt', 'DESC'],
         ],
       })
       .then((lecturers) => res.status(200).send(lecturers))
@@ -29,7 +29,7 @@ module.exports = {
       .then((lecturer) => {
         if (!lecturer) {
           return res.status(404).send({
-            message: 'Lecturer Not Found'
+            message: 'Lecturer Not Found',
           });
         }
         return res.status(200).send(lecturer);
@@ -57,7 +57,7 @@ module.exports = {
       .then(lecturer => {
         if (!lecturer) {
           return res.status(404).send({
-            message: 'Lecturer Not Found'
+            message: 'Lecturer Not Found',
           });
         }
         return lecturer
@@ -70,18 +70,18 @@ module.exports = {
       .catch((error) => res.status(400).send(error));
   },
 
-  delete (req, res) {
+  delete(req, res) {
     return Lecturer
       .findById(req.params.id)
-      .then(lecturer => P{
+      .then(lecturer => {
         if (!lecturer) {
-          return res.status(404).send({
+          return res.status(400).send({
             message: 'Lecturer Not Found',
           });
         }
         return lecturer
           .destroy()
-          .then() => res.status(204).send()
+          .then(() => res.status(204).send())
           .catch((error) => res.status(400).send(error));
       })
       .catch((error) => res.status(400).send(error));

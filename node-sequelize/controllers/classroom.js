@@ -1,7 +1,6 @@
 const Classroom = require('../models').Classroom;
 const Student = require('../models').Student;
 
-
 module.exports = {
   list(req, res) {
     return Classroom
@@ -28,7 +27,7 @@ module.exports = {
         }],
       })
       .then((classroom) => {
-        if (!classroom) => {
+        if (!classroom) {
           return res.status(404).send({
             message: 'Classroom Not Found',
           });
@@ -61,7 +60,7 @@ module.exports = {
             message: 'Classroom Not Found',
           });
         }
-      return classroom
+      return Classroom
         .update({
           class_name: req.body.class_name || classroom.class_name,
         })
@@ -75,7 +74,7 @@ module.exports = {
     return Classroom
       .findById(req.params.id)
       .then(classroom => {
-        if (!classroom) => {
+        if (!classroom) {
           return res.status(400).send({
             message: 'Classroom Not Found',
           });
@@ -97,7 +96,7 @@ module.exports = {
         include: [{
           model: Student,
           as: 'students',
-        }];
+        }]
       })
       .then((classroom) => res.status(201).send(classroom))
       .catch((error) => res.status(400).send(error));

@@ -19,12 +19,12 @@ module.exports = {
         ],
       })
       .then((course) => res.status(200).send(courses))
-      .catch((error) => res.status(400).send(error); });
+      .catch((error) => res.status(400).send(error));
   },
 
   getById(req, res) {
     return Course
-      .findById(req.params.id), {
+      .findById(req.params.id, {
         include: [{
           model: Course,
           as: 'course',
