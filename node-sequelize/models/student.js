@@ -5,7 +5,10 @@ module.exports = (sequelize, DataTypes) => {
     student_name: DataTypes.STRING
   }, {});
   Student.associate = function(models) {
-    Student.belongsTo(models.Classroom);
+    Student.belongsTo(models.Classroom, {
+      foreignKey: 'classroom_id',
+      as: 'classroom'
+    });
     Student.belongsToMany(models.Course, {
       through: 'StudentCourse',
       as: 'courses',

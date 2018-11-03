@@ -5,10 +5,10 @@ const Lecturer = require('../models').Lecturer;
 module.exports = {
   list(req, res) {
     return Course
-      .findByAll({
+      .findAll({
         include: [{
           model: Student,
-          as: 'students',
+          as: 'students'
         },{
           model: Lecturer,
           as: 'lecturer'
@@ -44,7 +44,7 @@ module.exports = {
   add(req, res) {
     return Course
       .create({
-        course_name: req.body.course_name,
+        course_name: req.body.course_name
       })
       .then((course) => res.status(201).send(course))
       .catch((error) => res.status(400).send(error));

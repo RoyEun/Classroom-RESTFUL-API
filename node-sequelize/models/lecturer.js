@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   Lecturer.associate = function(models) {
     Lecturer.hasOne(models.Course, {
       foreignKey: 'lecturer_id',
-      as: 'lecturer',
+      as: 'course',
     });
   };
   return Lecturer;
