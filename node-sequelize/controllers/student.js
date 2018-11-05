@@ -65,25 +65,19 @@ module.exports = {
   },
 
   update(req, res) {
-    return Student
-      .findById(req.params.id, {
-        include: [{
-          model: Classroom,
-          as: 'classroom'
-        },{
-          model: Course,
-          as: 'courses'
-        }],
-      })
+    return Student.sequelize.query(`SELECT * FROM PUBLIC."Students" WHERE PUBLIC."Students".id = ${req.params.id}`, {model: Student})
       .then(student => {
         if (!student) {
           return res.status(404).send({
             message: 'Student Not Found',
           });
         }
-        return student
+        return Student
           .update({
-            student_name: student.student_name,
+            student_name: req.body.student_name,
+            classroom_id: req.body.classroom_id || student.classroom_id
+          }, {
+            where: { id: req.params.id }
           })
           .then(() => res.status(200).send(student))
           .catch((error) => res.status(400).send(error));

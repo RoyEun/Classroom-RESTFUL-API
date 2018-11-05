@@ -34,22 +34,19 @@ module.exports = {
   },
 
   update(req, res) {
-    return Course
-      .findById(req.params.id, {
-        include: [{
-          model: Course,
-          as: 'course'
-        }],
-      })
+    return Course.sequelize.query(`SELECT * FROM PUBLIC."Courses" WHERE PUBLIC."Courses".id = ${req.params.id}`, {model: Course})
       .then(course => {
         if (!course) {
           return res.status(404).send({
             message: 'Course Not Found',
           });
         }
-        return course
+        return Course
           .update({
-            course_name: req.body.course_name || classroom.course_name,
+            course_name: req.body.course_name,
+            lecturer_id: req.body.lecturer_id || course.course_name
+          }, {
+            where: { id: req.params.id }
           })
           .then(() => res.status(200).send(course))
           .catch((error) => res.status(400).send(error));
