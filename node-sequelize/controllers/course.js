@@ -4,41 +4,24 @@ const Lecturer = require('../models').Lecturer;
 
 module.exports = {
   list(req, res) {
-    return Course
-      .findAll({
-        include: [{
-          model: Student,
-          as: 'students'
-        },{
-          model: Lecturer,
-          as: 'lecturer'
-        }],
-        order: [
-          ['createdAt', 'DESC'],
-          [{ model: Student, as: 'students' }, 'createdAt', 'DESC'],
-        ],
-      })
-      .then((courses) => res.status(200).send(courses))
-      .catch((error) => { res.status(400).send(error); });
+    //NEED TO COMPLETE INNER JOIN FOR STUDENT COURSE AND DESC ORDER
+    return Course.sequelize.query('SELECT * FROM Public."Courses"', {model: Course})
+       .then((course) => res.status(200).send(course))
+       .catch((error) => { res.status(400).send(error); });
   },
 
   getById(req, res) {
-    return Course
-      .findById(req.params.id, {
-        include: [{
-          model: Course,
-          as: 'course'
-        }],
-      })
-      .then((course) => {
-        if (!course) {
-          return res.status(404).send({
-            message: 'Course Not Found',
-          });
-        }
-        return res.status(200).send(course);
-      })
-      .catch((error) => res.status(400).send(error));
+    //NEED TO COMPLETE INNER JOIN FOR STUDENTCOURSE;
+    return Course.sequelize.query(`SELECT * FROM Public."Courses" WHERE Public."Courses".id = ${req.params.id}`, {model: Course})
+       .then((course) => {
+         if (!course.length) {
+           return res.status(404).send({
+             message: 'Course not Found',
+           });
+         }
+         return res.status(200).send(course);
+       })
+       .catch((error) => { res.status(400).send(error); });
   },
 
   add(req, res) {
