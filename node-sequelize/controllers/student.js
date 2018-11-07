@@ -4,9 +4,23 @@ const Course = require('../models').Course;
 
 module.exports = {
   list(req, res) {
-    //NEED TO COMPLETE WITH INNER JOIN FOR STUDENTCOURSE
-    return Student.sequelize.query('SELECT * FROM Public."Students"', {model: Student})
-       .then((students) => res.status(200).send(students))
+    return Student.sequelize.query('SELECT * FROM Public."Students" AS a INNER JOIN Public."Classrooms" AS b ON a.classroom_id = b.id', {model: Student})
+       .then((students) => {
+         return res.status(200).send(students.map((student) => {
+           let nestedClassroom = {};
+           let studentObj = student["dataValues"];
+
+           for (const item in studentObj) {
+             if (item === "classroom_id" || item === "class_name") {
+               nestedClassroom[item] = studentObj[item];
+               delete studentObj[item];
+             }
+           }
+
+           studentObj["classroom"] = nestedClassroom;
+           return student;
+         }));
+       })
        .catch((error) => { res.status(400).send(error); });
   },
 
