@@ -1,6 +1,8 @@
 const Student = require('../models').Student;
 const Classroom = require('../models').Classroom;
 const Course = require('../models').Course;
+const StudentCourse = require('../models').StudentCourse;
+const Lecturer = require('../models').Lecturer;
 
 module.exports = {
   list(req, res) {
@@ -22,6 +24,29 @@ module.exports = {
          }));
        })
        .catch((error) => { res.status(400).send(error); });
+  },
+
+  listAll(req, res) {
+    return Student.sequelize.query('SELECT sc.student_id, sc.course_id, s.classroom_id, s.student_name, c.id, c.lecturer_id, c.course_name, l.id, l.lecturer_name, cl.id, cl.class_name AS classroom_name FROM PUBLIC."Students" s LEFT JOIN PUBLIC."StudentCourses" sc ON sc.student_id = s.id LEFT JOIN PUBLIC."Courses" c ON sc.course_id = c.id LEFT JOIN PUBLIC."Lecturers" l ON c.lecturer_id = l.id LEFT JOIN PUBLIC."Classrooms" cl ON s.classroom_id = cl.id;', {
+      model: Student, Classroom, Course, StudentCourse, Lecturer
+    })
+      .then((students) => {
+        return res.status(200).send(students.map((student) => {
+          let nestedCourses = [{}];
+          let studentObj = student["dataValues"];
+
+          for (const item in studentObj) {
+            if (item === "course_id" || item === "course_name" || item === "lecturer_name" || item === "lecturer_id") {
+              nestedCourses[0][item] = studentObj[item];
+              delete studentObj[item];
+            }
+          }
+
+          studentObj["courses"] = nestedCourses;
+          return student;
+        }))
+      })
+      .catch((error) => { res.status(400).send(error); });
   },
 
   getById(req, res) {

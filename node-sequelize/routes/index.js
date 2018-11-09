@@ -19,6 +19,7 @@ router.put('/api/classroom/:id', classroomController.update);
 router.delete('api/classroom/:id', classroomController.delete);
 
 router.get('/api/student', studentController.list);
+router.get('/api/student/all', studentController.listAll);
 router.get('/api/student/:id', studentController.getById);
 router.post('/api/student', studentController.add);
 router.post('/api/student/add_course', studentController.addCourse);

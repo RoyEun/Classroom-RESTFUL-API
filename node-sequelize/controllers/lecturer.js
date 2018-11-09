@@ -10,7 +10,7 @@ module.exports = {
           as: 'course'
         }],
         order: [
-          ['createdAt', 'DESC'],
+          ['id', 'ASC'],
           [{ model: Course, as: 'course' }, 'createdAt', 'DESC'],
         ],
       })

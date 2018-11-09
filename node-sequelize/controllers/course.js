@@ -5,9 +5,15 @@ const Lecturer = require('../models').Lecturer;
 module.exports = {
   list(req, res) {
     //NEED TO COMPLETE INNER JOIN FOR STUDENT COURSE AND DESC ORDER
-    return Course.sequelize.query('SELECT * FROM Public."Courses"', {model: Course})
-       .then((course) => res.status(200).send(course))
-       .catch((error) => { res.status(400).send(error); });
+    // return Course.sequelize.query('SELECT * FROM Public."Courses"', {model: Course})
+    //    .then((course) => res.status(200).send(course))
+    //    .catch((error) => { res.status(400).send(error); });
+    return Course.sequelize.query(
+      'SELECT * FROM PUBLIC."Courses" INNER JOIN PUBLIC."Students" ON PUBLIC."Courses".id = PUBLIC."Students".classroom_id INNER JOIN PUBLIC."Lecturers" ON PUBLIC."Courses".lecturer_id = Public."Lecturers".id;',{
+        model: Course, Lecturer, Student
+      })
+        .then((course) => res.status(200).send(course))
+        .catch((error) => { res.status(400).send(error); })
   },
 
   getById(req, res) {
