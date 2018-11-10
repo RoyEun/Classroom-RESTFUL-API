@@ -31,21 +31,30 @@ module.exports = {
       model: Student, Classroom, Course, StudentCourse, Lecturer
     })
       .then((students) => {
-        return res.status(200).send(students.map((student) => {
-          let nestedCourses = [{}];
+        let nestedCourses = [];
+
+        return res.status(200).send(students.map((student, i) => {
+          let course = {};
           let studentObj = student["dataValues"];
 
           for (const item in studentObj) {
             if (item === "course_id" || item === "course_name" || item === "lecturer_name" || item === "lecturer_id") {
-              nestedCourses[0][item] = studentObj[item];
+              course[item] = studentObj[item];
               delete studentObj[item];
             }
           }
 
-          studentObj["courses"] = nestedCourses;
+          nestedCourses.push(course);
+
+          i !== students.length - 1 && studentObj["id"] === students[i+1]["dataValues"]["id"]
+            ? delete studentObj["student_name"]
+            : (() => {
+                studentObj["courses"] = nestedCourses;
+                nestedCourses = [];
+              })();
+
           return student;
-        }))
-      })
+        }))})
       .catch((error) => { res.status(400).send(error); });
   },
 
